@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snaplix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #0f172a; color: white; font-family: sans-serif; overflow-x: hidden; }
+        .nav-bottom { background-color: #1e293b; border-top: 1px solid #334155; }
+        .story-circle { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); padding: 2px; }
+        .post-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; background-color: #1e293b; }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="pb-20">
+
+    <header class="bg-[#0f172a]/90 backdrop-blur-md sticky top-0 z-50 p-4 flex justify-between items-center border-b border-[#1e293b]">
+        <h1 class="text-2xl font-bold italic text-blue-400">Snaplix</h1>
+        <div class="flex space-x-5 text-xl">
+            <i class="far fa-heart"></i>
+            <i class="fab fa-facebook-messenger"></i>
+        </div>
+    </header>
+
+    <div class="flex space-x-4 p-4 overflow-x-auto hide-scroll border-b border-[#1e293b]">
+        <div class="flex flex-col items-center space-y-1 min-w-[75px]">
+            <div class="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center border-2 border-dashed border-gray-500 text-2xl">
+                <i class="fas fa-plus"></i>
+            </div>
+            <span class="text-[10px]">Cerita Anda</span>
+        </div>
+        <div class="flex flex-col items-center space-y-1 min-w-[75px]">
+            <div class="story-circle rounded-full"><div class="w-16 h-16 bg-blue-600 rounded-full border-2 border-[#0f172a] flex items-center justify-center font-bold">SA</div></div>
+            <span class="text-[10px]">Snaplix admin</span>
+        </div>
+    </div>
+
+    <main id="main-feed" class="max-w-md mx-auto"></main>
+
+    <div id="loader" class="text-center p-10">
+        <i class="fas fa-circle-notch fa-spin text-blue-500 text-3xl"></i>
+    </div>
+
+    <nav class="nav-bottom fixed bottom-0 left-0 right-0 p-4 flex justify-between items-center z-50">
+        <i class="fas fa-home text-2xl"></i>
+        <i class="fas fa-search text-2xl text-gray-400"></i>
+        <i class="far fa-plus-square text-2xl text-gray-400"></i>
+        <i class="fas fa-video text-2xl text-gray-400"></i>
+        <div id="nav-prof" class="w-7 h-7 bg-blue-500 rounded-full border border-gray-400"></div>
+    </nav>
+
+    <script>
+        const feed = document.getElementById('main-feed');
+        const users = ['meme_lord', 'edukasi_pedia', 'fakta_unik', 'teknologi_update', 'sultan_meme', 'guru_digital', 'info_kesehatan', 'history_world', 'coding_vibes', 'pecinta_alam'];
+        const captions = [
+            'Wajib tahu sih fakta ini! 🧠 #edukasi',
+            'Relate gak nih? 😂 #memeindo',
+            'Pemandangan pagi ini luar biasa ✨',
+            'Tips buat kalian yang lagi belajar coding 💻',
+            'Meme harian biar gak stres gan',
+            'Edukasi singkat hari ini, slide ke kanan!',
+            'Gak nyangka ternyata begini sejarahnya..',
+            'Siapa yang pernah ngalamin kayak gini? 😂'
+        ];
+
+        let postCount = 0;
+        const targetPosts = 1000;
+
+        // Fungsi membuat satu elemen postingan
+        function createPost(index) {
+            const user = users[Math.floor(Math.random() * users.length)];
+            const cap = captions[Math.floor(Math.random() * captions.length)];
+            const likes = Math.floor(Math.random() * 50000).toLocaleString();
+            
+            // Variasi kategori gambar biar ada meme, edukasi, tech
+            const categories = ['funny', 'nature', 'tech', 'architecture', 'people'];
+            const cat = categories[Math.floor(Math.random() * categories.length)];
+            const imgUrl = `https://picsum.photos/seed/${index + Math.random()}/500/500?grayscale=${index % 10 === 0 ? 1 : 0}`;
+
+            return `
+                <article class="border-b border-[#1e293b] pb-4 mb-2">
+                    <div class="p-3 flex items-center space-x-3">
+                        <img src="https://i.pravatar.cc/100?u=${user}" class="w-8 h-8 rounded-full border border-gray-700">
+                        <span class="font-bold text-sm tracking-tight">${user}</span>
+                    </div>
+                    <img src="${imgUrl}" class="post-img" loading="lazy">
+                    <div class="p-3">
+                        <div class="flex justify-between mb-2">
+                            <div class="flex space-x-4 text-2xl">
+                                <i class="far fa-heart cursor-pointer hover:text-red-500"></i>
+                                <i class="far fa-comment"></i>
+                                <i class="far fa-paper-plane"></i>
+                            </div>
+                            <i class="far fa-bookmark text-2xl"></i>
+                        </div>
+                        <p class="font-bold text-sm">${likes} suka</p>
+                        <p class="text-sm"><span class="font-bold mr-2">${user}</span>${cap}</p>
+                        <p class="text-[10px] text-gray-500 mt-2 uppercase">Baru saja</p>
+                    </div>
+                </article>`;
+        }
+
+        // Fungsi memuat postingan secara bertahap (biar gak nge-lag)
+        function loadMorePosts() {
+            if (postCount >= targetPosts) {
+                document.getElementById('loader').innerHTML = "Semua 1000 postingan telah dimuat.";
+                return;
+            }
+
+            let html = "";
+            for (let i = 0; i < 10; i++) { // Muat 10 per kali scroll
+                if (postCount < targetPosts) {
+                    html += createPost(postCount);
+                    postCount++;
+                }
+            }
+            feed.insertAdjacentHTML('beforeend', html);
+        }
+
+        // Deteksi Scroll buat Infinite Scrolling
+        window.onscroll = function() {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+                loadMorePosts();
+            }
+        };
+
+        // Load awal
+        loadMorePosts();
+        loadMorePosts();
+
+        // Bonus: Update foto profil di nav dari data yang tersimpan
+        const savedProf = JSON.parse(localStorage.getItem('my_profile'));
+        if(savedProf) {
+            document.getElementById('nav-prof').innerHTML = `<img src="${savedProf.pic}" class="w-full h-full rounded-full">`;
+        }
+    </script>
+</body>
+</html>
