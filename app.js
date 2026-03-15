@@ -139,3 +139,6 @@ window.addComment = async (id) => {
     input.value = "";
     alert("Komentar terkirim!");
 };
+window.toggleModal = () => {
+    const modal = document.getElementById('uploadModal');
+    modal.classList.toggle('hidden');

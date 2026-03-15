@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #0f172a; color: white; font-family: sans-serif; overflow-x: hidden; }
+        body { background-color: #0f172a; color: white; font-family: -apple-system, sans-serif; }
         .nav-bottom { background-color: #1e293b; border-top: 1px solid #334155; }
         .story-circle { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); padding: 2px; }
         .post-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; background-color: #1e293b; }
@@ -16,7 +16,11 @@
 </head>
 <body class="pb-20">
 
-   
+    <header class="bg-[#0f172a]/90 backdrop-blur-md sticky top-0 z-50 p-4 flex justify-between items-center border-b border-[#1e293b]">
+        <h1 class="text-2xl font-bold italic text-blue-400">Snaplix</h1>
+        <div class="flex space-x-5 text-xl">
+            <i class="far fa-heart cursor-pointer"></i>
+            <i class="fab fa-facebook-messenger cursor-pointer"></i>
         </div>
     </header>
 
@@ -44,93 +48,110 @@
         <i class="fas fa-search text-2xl text-gray-400"></i>
         <i class="far fa-plus-square text-2xl text-gray-400"></i>
         <i class="fas fa-video text-2xl text-gray-400"></i>
-        <div id="nav-prof" class="w-7 h-7 bg-blue-500 rounded-full border border-gray-400"></div>
+        <div class="w-7 h-7 bg-blue-500 rounded-full border border-gray-400"></div>
     </nav>
 
     <script>
         const feed = document.getElementById('main-feed');
-        const users = ['meme_lord', 'edukasi_pedia', 'fakta_unik', 'teknologi_update', 'sultan_meme', 'guru_digital', 'info_kesehatan', 'history_world', 'coding_vibes', 'pecinta_alam'];
-        const captions = [
-            'Wajib tahu sih fakta ini! 🧠 #edukasi',
-            'Relate gak nih? 😂 #memeindo',
-            'Pemandangan pagi ini luar biasa ✨',
-            'Tips buat kalian yang lagi belajar coding 💻',
-            'Meme harian biar gak stres gan',
-            'Edukasi singkat hari ini, slide ke kanan!',
-            'Gak nyangka ternyata begini sejarahnya..',
-            'Siapa yang pernah ngalamin kayak gini? 😂'
+        
+        // Database Topik dan Caption Spesifik
+        const topicData = [
+            {
+                key: 'nature',
+                users: ['rimba_petualang', 'pencari_sunset', 'hutan_hijau'],
+                titles: ['Keajaiban Alam', 'Healing Terbaik', 'Suasana Tenang'],
+                captions: ['Gak ada yang ngalahin segarnya udara pagi di hutan.', 'Menikmati setiap detik matahari terbenam.', 'Alam selalu punya cara untuk menenangkan hati.']
+            },
+            {
+                key: 'tech',
+                users: ['gadget_review', 'setup_minimalis', 'dev_nongkrong'],
+                titles: ['Update Teknologi', 'Minimalist Setup', 'Work Harder'],
+                captions: ['Setup hari ini buat produktivitas maksimal!', 'Akhirnya dapet upgrade yang ditunggu-tunggu.', 'Ngoding jadi lebih betah kalau rapi kayak gini.']
+            },
+            {
+                key: 'food',
+                users: ['makan_terus', 'chef_amatir', 'jajan_enak'],
+                titles: ['Kuliner Hits', 'Homemade Recipe', 'Cheat Day'],
+                captions: ['Definisi bahagia itu makan enak bareng teman.', 'Eksperimen di dapur hari ini ternyata berhasil!', 'Jangan lupa makan siang ya sobat Snaplix.']
+            },
+            {
+                key: 'architecture',
+                users: ['sudut_arsitek', 'desain_pro', 'kota_estetik'],
+                titles: ['City Vibes', 'Modern Design', 'Geometris'],
+                captions: ['Suka banget sama detail bangunan yang satu ini.', 'Perpaduan warna dan cahaya yang pas banget.', 'Melihat kota dari sudut pandang yang berbeda.']
+            }
         ];
 
         let postCount = 0;
         const targetPosts = 1000;
 
-        // Fungsi membuat satu elemen postingan
         function createPost(index) {
-            const user = users[Math.floor(Math.random() * users.length)];
-            const cap = captions[Math.floor(Math.random() * captions.length)];
-            const likes = Math.floor(Math.random() * 50000).toLocaleString();
+            const topic = topicData[Math.floor(Math.random() * topicData.length)];
+            const user = topic.users[Math.floor(Math.random() * topic.users.length)];
+            const title = topic.titles[Math.floor(Math.random() * topic.titles.length)];
+            const cap = topic.captions[Math.floor(Math.random() * topic.captions.length)];
+            const likes = Math.floor(Math.random() * 95000).toLocaleString();
             
-            // Variasi kategori gambar biar ada meme, edukasi, tech
-            const categories = ['funny', 'nature', 'tech', 'architecture', 'people'];
-            const cat = categories[Math.floor(Math.random() * categories.length)];
-            const imgUrl = `https://picsum.photos/seed/${index + Math.random()}/500/500?grayscale=${index % 10 === 0 ? 1 : 0}`;
+            // Gambar berwarna sesuai kategori (Nature, Tech, dsb)
+            const imgUrl = `https://picsum.photos/seed/${index + 500}/500/500?${topic.key}`;
 
             return `
-                <article class="border-b border-[#1e293b] pb-4 mb-2">
-                    <div class="p-3 flex items-center space-x-3">
-                        <img src="https://i.pravatar.cc/100?u=${user}" class="w-8 h-8 rounded-full border border-gray-700">
-                        <span class="font-bold text-sm tracking-tight">${user}</span>
-                    </div>
-                    <img src="${imgUrl}" class="post-img" loading="lazy">
-                    <div class="p-3">
-                        <div class="flex justify-between mb-2">
-                            <div class="flex space-x-4 text-2xl">
-                                <i class="far fa-heart cursor-pointer hover:text-red-500"></i>
-                                <i class="far fa-comment"></i>
-                                <i class="far fa-paper-plane"></i>
+                <article class="border-b border-[#1e293b] pb-6 mb-4">
+                    <div class="p-3 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <img src="https://i.pravatar.cc/100?u=${user}" class="w-9 h-9 rounded-full border border-blue-500">
+                            <div>
+                                <p class="font-bold text-sm tracking-tight">${user}</p>
+                                <p class="text-[10px] text-blue-400 font-semibold uppercase">${title}</p>
                             </div>
-                            <i class="far fa-bookmark text-2xl"></i>
                         </div>
-                        <p class="font-bold text-sm">${likes} suka</p>
-                        <p class="text-sm"><span class="font-bold mr-2">${user}</span>${cap}</p>
-                        <p class="text-[10px] text-gray-500 mt-2 uppercase">Baru saja</p>
+                        <i class="fas fa-ellipsis-v text-gray-600 text-xs"></i>
+                    </div>
+
+                    <img src="${imgUrl}" class="post-img" loading="lazy">
+
+                    <div class="p-4">
+                        <div class="flex justify-between mb-3">
+                            <div class="flex space-x-5 text-2xl">
+                                <i class="far fa-heart cursor-pointer hover:text-red-500 transition"></i>
+                                <i class="far fa-comment cursor-pointer hover:text-gray-400"></i>
+                                <i class="far fa-paper-plane cursor-pointer hover:text-blue-400"></i>
+                            </div>
+                            <i class="far fa-bookmark text-2xl cursor-pointer"></i>
+                        </div>
+                        
+                        <p class="font-bold text-sm mb-1">${likes} suka</p>
+                        <p class="text-sm">
+                            <span class="font-bold mr-2 text-blue-300">${user}</span>
+                            <span class="text-gray-200">${cap}</span>
+                        </p>
+                        
+                        <p class="text-[10px] text-gray-500 mt-3 font-medium">DIMUAT 2 MENIT YANG LALU</p>
                     </div>
                 </article>`;
         }
 
-        // Fungsi memuat postingan secara bertahap (biar gak nge-lag)
-        function loadMorePosts() {
-            if (postCount >= targetPosts) {
-                document.getElementById('loader').innerHTML = "Semua 1000 postingan telah dimuat.";
-                return;
-            }
-
-            let html = "";
-            for (let i = 0; i < 10; i++) { // Muat 10 per kali scroll
+        function loadMore() {
+            if (postCount >= targetPosts) return;
+            let chunk = "";
+            for (let i = 0; i < 6; i++) {
                 if (postCount < targetPosts) {
-                    html += createPost(postCount);
+                    chunk += createPost(postCount);
                     postCount++;
                 }
             }
-            feed.insertAdjacentHTML('beforeend', html);
+            feed.insertAdjacentHTML('beforeend', chunk);
         }
 
-        // Deteksi Scroll buat Infinite Scrolling
-        window.onscroll = function() {
-            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-                loadMorePosts();
+        window.onscroll = () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 1000) {
+                loadMore();
             }
         };
 
-        // Load awal
-        loadMorePosts();
-        loadMorePosts();
-
-        // Bonus: Update foto profil di nav dari data yang tersimpan
-        const savedProf = JSON.parse(localStorage.getItem('my_profile'));
-        if(savedProf) {
-            document.getElementById('nav-prof').innerHTML = `<img src="${savedProf.pic}" class="w-full h-full rounded-full">`;
-        }
+        // Mulai muat postingan
+        loadMore();
+        loadMore();
     </script>
 </body>
 </html>
